@@ -72,9 +72,15 @@ pub struct Opt {
     #[structopt(long, value_name = "bytes", default_value = "2097152")]
     // default is 2MiB
     max_feed_size: u64,
-    /// Single user mode, only specified user can use this bot
-    #[structopt(long, value_name = "user id")]
-    single_user: Option<i64>,
+    /// Private mode, only specified user can use this bot.
+    /// This argument can be passed multiple times to allow multiple admins
+    #[structopt(
+        long,
+        value_name = "user id",
+        number_of_values = 1,
+        alias = "single_user" // For compatibility
+    )]
+    admin: Vec<i64>,
     /// Make bot commands only accessible for group admins.
     #[structopt(long)]
     restricted: bool,

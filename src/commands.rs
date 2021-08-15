@@ -29,8 +29,8 @@ pub async fn check_command(opt: &crate::Opt, cmd: Arc<Command<Text>>) -> bool {
         .map(|user| user.id.0)
         .unwrap_or_else(|| cmd.chat.id.0);
 
-    // Single user mode
-    if matches!(opt.single_user, Some(owner) if owner != from) {
+    // Private mode
+    if !opt.admin.is_empty() && !opt.admin.contains(&from) {
         eprintln!(
             "Unauthenticated request from user/channel: {}, command: {}, args: {}",
             from, cmd.command, cmd.text.value
