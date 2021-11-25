@@ -12,8 +12,8 @@ RUN cargo +nightly build --release
 FROM alpine
 ENV TZ=Asia/Shanghai
 
-COPY --from=builder ["/rssbot/target/release/rssbot", "/entrypoint.sh", "/"]
+COPY --from=builder ["/rssbot/target/release/coolbot", "/entrypoint.sh", "/"]
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
-
+RUN mv /coolbot /rssbot
 CMD ["/entrypoint.sh"]

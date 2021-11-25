@@ -1,5 +1,5 @@
 [package]
-name = "rssbot"
+name = "coolbot"
 version = "2.0.0-alpha.11"
 authors = ["iovxw <iovxw@outlook.com>"]
 edition = "2018"
