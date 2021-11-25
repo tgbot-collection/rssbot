@@ -1,12 +1,9 @@
 use std::sync::Arc;
-use std::sync::Mutex;
 
 use either::Either;
 use pinyin::{Pinyin, ToPinyin};
-use tbot::{
-    contexts::{Command, Text},
-    types::parameters,
-};
+use tbot::{contexts::Command, types::parameters};
+use tokio::sync::Mutex;
 
 use crate::data::Database;
 use crate::messages::{format_large_msg, Escape};
@@ -15,7 +12,7 @@ use super::{check_channel_permission, update_response, MsgTarget};
 
 pub async fn rss(
     db: Arc<Mutex<Database>>,
-    cmd: Arc<Command<Text>>,
+    cmd: Arc<Command>,
 ) -> Result<(), tbot::errors::MethodCall> {
     let chat_id = cmd.chat.id;
     let channel = &cmd.text.value;
@@ -23,15 +20,14 @@ pub async fn rss(
     let target = &mut MsgTarget::new(chat_id, cmd.message_id);
 
     if !channel.is_empty() {
-        let user_id = cmd.from.as_ref().unwrap().id;
-        let channel_id = check_channel_permission(&cmd.bot, channel, target, user_id).await?;
+        let channel_id = check_channel_permission(&cmd, channel, target).await?;
         if channel_id.is_none() {
             return Ok(());
         }
         target_id = channel_id.unwrap();
     }
 
-    let feeds = db.lock().unwrap().subscribed_feeds(target_id.0);
+    let feeds = db.lock().await.subscribed_feeds(target_id.0);
     let mut msgs = if let Some(mut feeds) = feeds {
         feeds.sort_by_cached_key(|feed| {
             feed.title

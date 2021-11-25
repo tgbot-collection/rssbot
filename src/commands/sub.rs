@@ -1,10 +1,7 @@
 use std::sync::Arc;
-use std::sync::Mutex;
 
-use tbot::{
-    contexts::{Command, Text},
-    types::parameters,
-};
+use tbot::{contexts::Command, types::parameters};
+use tokio::sync::Mutex;
 
 use crate::client::pull_feed;
 use crate::data::Database;
@@ -14,7 +11,7 @@ use super::{check_channel_permission, update_response, MsgTarget};
 
 pub async fn sub(
     db: Arc<Mutex<Database>>,
-    cmd: Arc<Command<Text>>,
+    cmd: Arc<Command>,
 ) -> Result<(), tbot::errors::MethodCall> {
     let chat_id = cmd.chat.id;
     let text = &cmd.text.value;
@@ -26,8 +23,7 @@ pub async fn sub(
     match &*args {
         [url] => feed_url = url,
         [channel, url] => {
-            let user_id = cmd.from.as_ref().unwrap().id;
-            let channel_id = check_channel_permission(&cmd.bot, channel, target, user_id).await?;
+            let channel_id = check_channel_permission(&cmd, channel, target).await?;
             if channel_id.is_none() {
                 return Ok(());
             }
@@ -36,11 +32,11 @@ pub async fn sub(
         }
         [..] => {
             let msg = tr!("sub_how_to_use");
-            update_response(&cmd.bot, target, parameters::Text::with_plain(&msg)).await?;
+            update_response(&cmd.bot, target, parameters::Text::with_plain(msg)).await?;
             return Ok(());
         }
     };
-    if db.lock().unwrap().is_subscribed(target_id.0, feed_url) {
+    if db.lock().await.is_subscribed(target_id.0, feed_url) {
         update_response(
             &cmd.bot,
             target,
@@ -50,7 +46,7 @@ pub async fn sub(
         return Ok(());
     }
 
-    if cfg!(feature = "hosted-by-iovxw") && db.lock().unwrap().all_feeds().len() >= 1500 {
+    if cfg!(feature = "hosted-by-iovxw") && db.lock().await.all_feeds().len() >= 1500 {
         let msg = tr!("subscription_rate_limit");
         update_response(&cmd.bot, target, parameters::Text::with_markdown(msg)).await?;
         return Ok(());
@@ -63,7 +59,7 @@ pub async fn sub(
     .await?;
     let msg = match pull_feed(feed_url).await {
         Ok(feed) => {
-            if db.lock().unwrap().subscribe(target_id.0, feed_url, &feed) {
+            if db.lock().await.subscribe(target_id.0, feed_url, &feed) {
                 tr!(
                     "subscription_succeeded",
                     link = Escape(&feed.link),
