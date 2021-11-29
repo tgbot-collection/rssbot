@@ -34,9 +34,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.44"
+version = "1.0.51"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61604a8f862e1d5c3229fdd78f8b02c68dcf73a4c4b05fd636d12240aaa242c1"
+checksum = "8b26702f315f53b6071259e15dd9d64528213b44d61de1ec926eca7715d62203"
 
 [[package]]
 name = "arc-swap"
@@ -190,6 +190,33 @@ dependencies = [
  "textwrap",
  "unicode-width",
  "vec_map",
+]
+
+[[package]]
+name = "coolbot"
+version = "2.0.0-alpha.11"
+dependencies = [
+ "anyhow",
+ "atomicwrites",
+ "chrono",
+ "ctl10n",
+ "either",
+ "futures",
+ "hyper-proxy",
+ "lazy_static",
+ "once_cell",
+ "pinyin",
+ "quick-xml",
+ "regex",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "structopt",
+ "tbot",
+ "thiserror",
+ "tokio",
+ "tokio-stream",
+ "tokio-util",
 ]
 
 [[package]]
@@ -1282,33 +1309,6 @@ dependencies = [
  "untrusted",
  "web-sys",
  "winapi",
-]
-
-[[package]]
-name = "rssbot"
-version = "2.0.0-alpha.11"
-dependencies = [
- "anyhow",
- "atomicwrites",
- "chrono",
- "ctl10n",
- "either",
- "futures",
- "hyper-proxy",
- "lazy_static",
- "once_cell",
- "pinyin",
- "quick-xml",
- "regex",
- "reqwest",
- "serde",
- "serde_json",
- "structopt",
- "tbot",
- "thiserror",
- "tokio",
- "tokio-stream",
- "tokio-util",
 ]
 
 [[package]]
