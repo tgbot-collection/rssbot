@@ -77,15 +77,7 @@ pub async fn pull_feed(url: &str) -> Result<Rss, FeedError> {
 
 pub fn init_client(bot_name: &str, insecue: bool, max_feed_size: u64) {
     let mut headers = reqwest::header::HeaderMap::new();
-    let ua = format!(
-        concat!(
-            env!("CARGO_PKG_NAME"),
-            "/",
-            env!("CARGO_PKG_VERSION"),
-            " (+https://t.me/{})"
-        ),
-        bot_name
-    );
+    let ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.3538.77 Safari/537.36";
     headers.insert(
         reqwest::header::USER_AGENT,
         reqwest::header::HeaderValue::from_str(&ua).unwrap(),
