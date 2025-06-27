@@ -14,4 +14,4 @@ COPY --from=builder ["/rssbot/target/release/rssbot", "/usr/local/bin"]
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 
-CMD rssbot --database /root/rssbot.json --min-interval 900 $TOKEN
+CMD rssbot --database /root/rssbot.json --min-interval 900 $TOKEN --max-feed-size 0
